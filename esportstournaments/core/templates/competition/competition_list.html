@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <title>Competitions - {{ SITE_NAME }}</title>
+{% endblock %}
+
+{% block body %}
+
+
+
+    <div class="container page">
+
+        <form method="POST" action="">
+            <table class="table">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <tr>
+                    <td colspan="2">
+                        <input class="btn btn-md btn-success" type="submit" value="Filter"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+
+        <div id="new-team">
+            <h2 id="" style="text-decoration: none; margin:8px">
+                <a style="text-decoration:none; color:white;" href="{% url 'teams:create' %}">
+                    <i class="fa fa-plus"></i> Create a new team
+                </a>
+            </h2>
+        </div>
+        <div class="col-xs-12">
+
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="panel">
+                        <div class="panel-body">
+
+
+                            {% if competitions_list.count == 0 %}
+                                <b>No competiton yet!</b>
+                            {% endif %}
+                            {% for competition in competitions_list %}
+                                <div class="col-xs-12 col-sm-6 col-md-4 league">
+                                    <img src="
+                                            {% if ESPORTS_MODE %}
+
+                                        {% if league.game.image != "" %}{{ MEDIA_URL }}{{ league.game.image }}{% endif %}"
+                                        ><br>
+                                    {% else %}
+                                        {{ league.sport.name }}
+                                    {% endif %}
+                                    <h6><b>{{ competition.name }}</b></h6>
+                                    <br/>
+                                    <ul>
+                                        {% if ESPORTS_MODE %}
+                                            <li><b>Platform:</b> {{ league.platform.name }}</li>
+                                        {% endif %}
+                                        <li><b>Starts:</b> {{ competition.start }}</li>
+                                        <li><b>Teams: </b> {{ competition.teams.count }}/{{ competition.size }}</li>
+                                        {% if ESPORTS_MODE %}
+                                            <li><b>Game:</b> {{ competition.game.name }}</li>
+                                        {% else %}
+                                            <li><b>Sport:</b> {{ league.sport.name }}</li>
+                                        {% endif %}
+                                        <li><b>{% if league.teamformat == 0 %}
+                                            1v1
+                                        {% elif league.teamformat == 1 %}
+                                            2v2
+                                        {% elif league.teamformat == 2 %}
+                                            3v3
+                                        {% elif league.teamformat == 3 %}
+                                            4v4
+                                        {% endif %}</b></li>
+                                    </ul>
+                                    <ul>
+
+                                        <li><b>Registration Opens: (Local time)</b>
+                                            <script>
+                                                const date = new Date("{{ competition.open_register|safe }}");
+                                                document.write(date.toLocaleString());
+                                            </script>
+                                        </li>
+                                        <li><b>Registration Closes (Local time)</b>
+                                            <script>
+                                                const date2 = new Date("{{ competition.close_register|safe }}");
+                                                document.write(date2.toLocaleString());
+                                            </script>
+                                        </li>
+                                        <li><b>Registration Fee: </b></li>
+                                    </ul>
+                                    <a class="btn btn-primary btn-block btn-xs jleague"
+                                       href="{% url 'competition:detail' pk=league.id %}">JOIN LEAGUE</a>
+                                </div>
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
